@@ -42,3 +42,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 /target/
+/test-output/
+
+*.classpath
+.project
+.settings/org.eclipse.core.resources.prefs
+.settings/org.eclipse.jdt.core.prefs
+*.prefs
