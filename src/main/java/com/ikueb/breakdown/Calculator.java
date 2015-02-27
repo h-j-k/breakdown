@@ -19,8 +19,8 @@ public class Calculator {
      * Break down the input into {@link Denomination} values.
      *
      * @param input the value to break down
-     * @return a {@link Map} with the {@link Denomination} as keys and a positive integer, the
-     *         multiplier, as values
+     * @return an unmodifiable {@link Map} with the {@link Denomination} as keys and a positive
+     *         integer, the multiplier, as values
      */
     public static Map<Denomination, Integer> getBreakdown(double input) {
         final Map<Denomination, Integer> result = new EnumMap<>(Denomination.class);
