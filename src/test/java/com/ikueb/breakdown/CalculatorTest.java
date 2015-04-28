@@ -10,6 +10,8 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.DoubleFunction;
+import java.util.stream.Stream;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -39,9 +41,19 @@ public class CalculatorTest {
 
     @Test(dataProvider = "test-cases")
     public void test(final Double testValue, final CaseBuilder builder) {
-        final Map<Denomination, Integer> expected = Objects.requireNonNull(builder).getExpected();
-        assertThat(Calculator.getBreakdown(Objects.requireNonNull(testValue).doubleValue()),
-                equalTo(expected));
+        doTest(testValue, builder, Calculator::getBreakdown);
+    }
+
+    @Test(dataProvider = "test-cases")
+    public void testRecursion(final Double testValue, final CaseBuilder builder) {
+        doTest(testValue, builder, Calculator::getBreakdownRecursively);
+    }
+
+    private void doTest(final Double testValue, final CaseBuilder builder,
+            final DoubleFunction<Map<Denomination, Integer>> function) {
+        Stream.of(testValue, builder).forEach(Objects::requireNonNull);
+        final Map<Denomination, Integer> expected = builder.getExpected();
+        assertThat(function.apply(testValue.doubleValue()), equalTo(expected));
         assertThat(Double.valueOf(Calculator.compute(expected)), equalTo(testValue));
     }
 

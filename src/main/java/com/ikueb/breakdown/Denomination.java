@@ -16,12 +16,23 @@ public enum Denomination {
     NICKEL(0.05, "5¢"),
     A_CENT(0.01, "1¢");
 
+    static final int MULTIPLIER = 100;
+
     private final BigDecimal value;
+    private final int centValue;
     private String description;
 
     private Denomination(double value, final String description) {
         this.value = BigDecimal.valueOf(value);
+        this.centValue = (int) (MULTIPLIER * value);
         this.description = Objects.requireNonNull(description);
+    }
+
+    /**
+     * @return the value in cents
+     */
+    public int getCentValue() {
+        return centValue;
     }
 
     /**

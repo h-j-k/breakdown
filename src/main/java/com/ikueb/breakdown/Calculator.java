@@ -2,9 +2,11 @@ package com.ikueb.breakdown;
 
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Utility class for manipulating with {@link Denomination} enums.
@@ -33,6 +35,34 @@ public class Calculator {
             }
         }
         return Collections.unmodifiableMap(result);
+    }
+
+    /**
+     * Break down the input into {@link Denomination} values by recursion.
+     *
+     * @param input the value to break down
+     * @return an unmodifiable {@link Map} with the {@link Denomination} as keys and a
+     *         positive integer, the multiplier, as values
+     */
+    public static Map<Denomination, Integer> getBreakdownRecursively(double input) {
+        return Collections.unmodifiableMap(recurse(Stream.of(Denomination.values())
+                .iterator(), (int) (input * Denomination.MULTIPLIER), new EnumMap<>(
+                Denomination.class)));
+    }
+
+    private static Map<Denomination, Integer> recurse(Iterator<Denomination> iterator,
+            int input, Map<Denomination, Integer> result) {
+        if (input == 0 || !iterator.hasNext()) {
+            return result;
+        }
+        Denomination current = iterator.next();
+        int nextInput = input;
+        int units = input / current.getCentValue();
+        if (units != 0) {
+            result.put(current, Integer.valueOf(units));
+            nextInput = input % current.getCentValue();
+        }
+        return recurse(iterator, nextInput, result);
     }
 
     /**
