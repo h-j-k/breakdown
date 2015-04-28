@@ -45,9 +45,10 @@ public class Calculator {
      *         positive integer, the multiplier, as values
      */
     public static Map<Denomination, Integer> getBreakdownRecursively(double input) {
-        return Collections.unmodifiableMap(recurse(Stream.of(Denomination.values())
-                .iterator(), (int) (input * Denomination.MULTIPLIER), new EnumMap<>(
-                Denomination.class)));
+        return Collections.unmodifiableMap(
+                recurse(Stream.of(Denomination.values()).iterator(), 
+                        (int) (input * Denomination.MULTIPLIER), 
+                        new EnumMap<>(Denomination.class)));
     }
 
     private static Map<Denomination, Integer> recurse(Iterator<Denomination> iterator,
