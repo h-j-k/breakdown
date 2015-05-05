@@ -24,7 +24,7 @@ public enum Denomination {
 
     private Denomination(double value, final String description) {
         this.value = BigDecimal.valueOf(value);
-        this.centValue = (int) (MULTIPLIER * value);
+        this.centValue = quantize(value);
         this.description = Objects.requireNonNull(description);
     }
 
@@ -74,6 +74,10 @@ public enum Denomination {
      */
     public double multiply(int multiplier) {
         return value.multiply(BigDecimal.valueOf(multiplier)).doubleValue();
+    }
+
+    public static int quantize(double input) {
+        return (int) (input * MULTIPLIER);
     }
 
 }

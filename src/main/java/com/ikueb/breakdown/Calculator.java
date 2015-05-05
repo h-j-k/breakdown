@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,25 +46,20 @@ public class Calculator {
      *         positive integer, the multiplier, as values
      */
     public static Map<Denomination, Integer> getBreakdownRecursively(double input) {
-        return Collections.unmodifiableMap(
-                recurse(Stream.of(Denomination.values()).iterator(), 
-                        (int) (input * Denomination.MULTIPLIER), 
-                        new EnumMap<>(Denomination.class)));
+        return recurse(Stream.of(Denomination.values()).iterator(),
+                Denomination.quantize(input), new EnumMap<>(Denomination.class));
     }
 
     private static Map<Denomination, Integer> recurse(Iterator<Denomination> iterator,
             int input, Map<Denomination, Integer> result) {
         if (input == 0 || !iterator.hasNext()) {
-            return result;
+            return Collections.unmodifiableMap(result);
         }
         Denomination current = iterator.next();
-        int nextInput = input;
-        int units = input / current.getCentValue();
-        if (units != 0) {
-            result.put(current, Integer.valueOf(units));
-            nextInput = input % current.getCentValue();
-        }
-        return recurse(iterator, nextInput, result);
+        return recurse(iterator, result.computeIfAbsent(current, key ->
+                    Optional.of(Integer.valueOf(input / key.getCentValue()))
+                        .filter(i -> i.intValue() != 0).orElse(null)) == null ? 
+                            input : input % current.getCentValue(), result);
     }
 
     /**
