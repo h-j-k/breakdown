@@ -5,7 +5,6 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,9 +49,12 @@ public class Calculator {
                 Denomination.quantize(input), new EnumMap<>(Denomination.class));
     }
 
-    private static Integer nonZeroOrNull(int input) {
-        return Optional.of(Integer.valueOf(input)).filter(i -> i.intValue() != 0)
-                .orElse(null);
+    /**
+     * @param input the value to wrap
+     * @return {@code null} if {@code 0}, else an {@link Integer} instance
+     */
+    private static Integer getValue(int input) {
+        return input == 0 ? null : Integer.valueOf(input);
     }
 
     private static Map<Denomination, Integer> recurse(Iterator<Denomination> iterator,
@@ -62,7 +64,7 @@ public class Calculator {
         }
         Denomination current = iterator.next();
         return recurse(iterator, result.computeIfAbsent(current,
-                key -> nonZeroOrNull(input / key.getCentValue())) == null ?
+                    key -> getValue(input / key.getCentValue())) == null ?
                             input : input % current.getCentValue(), result);
     }
 
