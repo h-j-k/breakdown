@@ -50,15 +50,19 @@ public class Calculator {
                 Denomination.quantize(input), new EnumMap<>(Denomination.class));
     }
 
+    private static Integer nonZeroOrNull(int input) {
+        return Optional.of(Integer.valueOf(input)).filter(i -> i.intValue() != 0)
+                .orElse(null);
+    }
+
     private static Map<Denomination, Integer> recurse(Iterator<Denomination> iterator,
             int input, Map<Denomination, Integer> result) {
         if (input == 0 || !iterator.hasNext()) {
             return Collections.unmodifiableMap(result);
         }
         Denomination current = iterator.next();
-        return recurse(iterator, result.computeIfAbsent(current, key ->
-                    Optional.of(Integer.valueOf(input / key.getCentValue()))
-                        .filter(i -> i.intValue() != 0).orElse(null)) == null ? 
+        return recurse(iterator, result.computeIfAbsent(current,
+                key -> nonZeroOrNull(input / key.getCentValue())) == null ?
                             input : input % current.getCentValue(), result);
     }
 
