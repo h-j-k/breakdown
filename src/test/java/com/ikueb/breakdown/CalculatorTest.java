@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 h-j-k. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ikueb.breakdown;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -82,23 +97,21 @@ public class CalculatorTest {
         }
 
         /**
-         * Let <em>v</em> be the sum of the current value and <code>multiplier</code>.<br>
-         * If <em>v</em> is greater than zero, the value is updated as such, else the entry for
-         * <code>denominator</code> is removed.<br>
-         * As such, the generated {@link Map} will only have denominators with positive multipliers.
+         * Let <em>v</em> be the sum of the current value and {@code multiplier}.<br>
+         * If <em>v</em> is greater than zero, the value is updated as such, else the
+         * entry for {@code denomination} is removed.<br>
+         * As such, the generated {@link Map} will only have denominators with positive
+         * multipliers, and any negative multiplers at any stage will remove the
+         * {@code denomination} mapping.
          *
          * @param denomination the denomination to add
          * @param multiplier the multiplier to add
          * @return this {@link CaseBuilder}
          */
         CaseBuilder with(final Denomination denomination, int multiplier) {
-            final int current = map.getOrDefault(Objects.requireNonNull(denomination),
-                    Integer.valueOf(0)).intValue();
-            if (current + multiplier > 0) {
-                map.put(denomination, Integer.valueOf(current + multiplier));
-            } else {
-                map.remove(denomination);
-            }
+            map.merge(denomination, Integer.valueOf(multiplier), (now, in) -> {
+                int total = now.intValue() + in.intValue();
+                return total > 0 ? Integer.valueOf(total) : null; });
             return this;
         }
 

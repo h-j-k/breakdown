@@ -1,4 +1,3 @@
-breakdown
-====
+# breakdown
 
-Breakdown calculator aka change dispenser.
+A simple change dispenser calculator.
