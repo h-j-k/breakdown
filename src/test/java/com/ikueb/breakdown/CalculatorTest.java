@@ -93,7 +93,7 @@ public class CalculatorTest {
         }
 
         static CaseBuilder createEmpty() {
-            return new CaseBuilder(Collections.EMPTY_MAP);
+            return new CaseBuilder(Collections.emptyMap());
         }
 
         /**
